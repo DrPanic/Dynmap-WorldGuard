@@ -11,6 +11,9 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -327,7 +330,7 @@ public class DynmapWorldGuardPlugin extends JavaPlugin {
                 }
                 else {
                     curworld = worldsToDo.remove(0);
-                    RegionManager rm = wg.getRegionManager(curworld); /* Get region manager for world */
+                    RegionManager rm = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(curworld)); /* Get region manager for world */
                     if(rm != null) {
                         Map<String,ProtectedRegion> regions = rm.getRegions();  /* Get all the regions */
                         if ((regions != null) && (regions.isEmpty() == false)) {
@@ -374,20 +377,15 @@ public class DynmapWorldGuardPlugin extends JavaPlugin {
         info("initializing");
         PluginManager pm = getServer().getPluginManager();
         /* Get dynmap */
-        dynmap = pm.getPlugin("dynmap");
-        if(dynmap == null) {
+        api = (DynmapAPI) Bukkit.getServer().getPluginManager().getPlugin("Dynmap");
+        if(api == null) {
             severe("Cannot find dynmap!");
             return;
         }
-        api = (DynmapAPI)dynmap; /* Get API */
-        /* Get WorldGuard */
-        Plugin p = pm.getPlugin("WorldGuard");
-        if(p == null) {
-            severe("Cannot find WorldGuard!");
-            return;
-        }
-        wg = (WorldGuardPlugin)p;
-        pc = wg.getProfileCache();
+
+        wg = WorldGuardPlugin.inst();
+        pc = WorldGuard.getInstance().getProfileCache();
+
         
         getServer().getPluginManager().registerEvents(new OurServerListener(), this);        
         
