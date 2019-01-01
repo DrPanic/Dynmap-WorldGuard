@@ -11,7 +11,11 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sk89q.squirrelid.Profile;
+import com.sk89q.squirrelid.cache.ProfileCache;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector2;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -30,8 +34,6 @@ import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 
 import com.mewin.WGCustomFlags.WGCustomFlagsPlugin;
-import com.sk89q.worldedit.BlockVector;
-import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.domains.PlayerDomain;
@@ -41,8 +43,6 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionType;
-import com.sk89q.worldguard.util.profile.Profile;
-import com.sk89q.worldguard.util.profile.cache.ProfileCache;
 
 public class DynmapWorldGuardPlugin extends JavaPlugin {
     private static Logger log;
@@ -250,8 +250,8 @@ public class DynmapWorldGuardPlugin extends JavaPlugin {
         if(isVisible(region.getId(), world.getName())) {
             String id = region.getId();
             RegionType tn = region.getType();
-            BlockVector l0 = region.getMinimumPoint();
-            BlockVector l1 = region.getMaximumPoint();
+            BlockVector3 l0 = region.getMinimumPoint();
+            BlockVector3 l1 = region.getMaximumPoint();
 
             if(tn == RegionType.CUBOID) { /* Cubiod region? */
                 /* Make outline */
@@ -264,11 +264,11 @@ public class DynmapWorldGuardPlugin extends JavaPlugin {
             }
             else if(tn == RegionType.POLYGON) {
                 ProtectedPolygonalRegion ppr = (ProtectedPolygonalRegion)region;
-                List<BlockVector2D> points = ppr.getPoints();
+                List<BlockVector2> points = ppr.getPoints();
                 x = new double[points.size()];
                 z = new double[points.size()];
                 for(int i = 0; i < points.size(); i++) {
-                    BlockVector2D pt = points.get(i);
+                    BlockVector2 pt = points.get(i);
                     x[i] = pt.getX(); z[i] = pt.getZ();
                 }
             }
